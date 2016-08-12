@@ -14,23 +14,23 @@ tcpSerSock.listen(5)
 # USERNAME = raw_input('Enter Your USERNAME, please:')
 USERNAME = 'Server'
 
+print 'waiting for connection...'
+tcpCliSock, addr = tcpSerSock.accept()
+print '...connected from: ', addr
+print 'Enter ".logout to quit."'
+
 while True:
-    print 'waiting for connection...'
-    tcpCliSock, addr = tcpSerSock.accept()
-    print '...connected from: ', addr
+    data = tcpCliSock.recv(BUFSIZ)      # .recv(): receive stream that comes from TCP-Client
+    print data
+    msg = raw_input('> ')
+    while not msg:
+        msg = raw_input('Message Can Not be Empty! Enter Your Message Again, please> ')
+    if msg == '.logout':
+        break
+    data = 'From {user}: {msg}'.format(user=USERNAME, msg=msg)
+    tcpCliSock.send('[{time}] {data}'.format(time=ctime(), data=data))      # .send(): send response to TCP-Client
 
-    while True:
-        data = tcpCliSock.recv(BUFSIZ)      # .recv(): receive stream that comes from TCP-Client
-        print data
-        # if not data:
-        #     break
-        msg = raw_input('> ')
-        while not msg:
-            msg = raw_input('Message Can Not be Empty! Enter Your Message Again, please> ')
-        data = 'From {user}: {msg}'.format(user=USERNAME, msg=msg)
-        tcpCliSock.send('[{time}] {data}'.format(time=ctime(), data=data))      # .send(): send response to TCP-Client
-
-    tcpCliSock.close()
+tcpCliSock.close()
 
 tcpSerSock.close()
 
