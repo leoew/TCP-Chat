@@ -17,18 +17,18 @@ USERNAME = 'Server'
 print 'waiting for connection...'
 tcpCliSock, addr = tcpSerSock.accept()
 print '...connected from: ', addr
-print 'Enter ".logout to quit."'
+print 'Enter ".logout" to quit.'
 
 while True:
     data = tcpCliSock.recv(BUFSIZ)      # .recv(): receive stream that comes from TCP-Client
     print data
     msg = raw_input('> ')
     while not msg:
-        msg = raw_input('Message Can Not be Empty! Enter Your Message Again, please> ')
+        msg = raw_input('Message Can Not be Empty! Enter Your Message Again, please:')
     if msg == '.logout':
         break
-    data = 'From {user}: {msg}'.format(user=USERNAME, msg=msg)
-    tcpCliSock.send('[{time}] {data}'.format(time=ctime(), data=data))      # .send(): send response to TCP-Client
+    data_send = '[{time}] From <{user}>: {msg}'.format(time=ctime(), user=USERNAME, msg=msg)
+    tcpCliSock.send(data_send)      # .send(): send response to TCP-Client
 
 tcpCliSock.close()
 
